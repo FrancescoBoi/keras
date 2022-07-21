@@ -106,7 +106,7 @@ class Adadelta(optimizer.Optimizer):
 
     def update_step(self, grad, variable):
         """Update step given gradient and the associated model variable."""
-        lr = tf.cast(self.learning_rate, variable.dtype)
+        lr = tf.cast(self.current_learning_rate(), variable.dtype)
 
         var_key = self._var_key(variable)
         rho = self.rho

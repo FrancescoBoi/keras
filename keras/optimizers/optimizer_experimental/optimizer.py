@@ -279,8 +279,7 @@ class _BaseOptimizer(tf.Module):
             )
         self._iterations = variable
 
-    @property
-    def learning_rate(self):
+    def current_learning_rate(self):
         if not hasattr(self, "_learning_rate") or self._learning_rate is None:
             raise ValueError(
                 "Missing learning rate, please set self.learning_rate at"
@@ -294,19 +293,33 @@ class _BaseOptimizer(tf.Module):
             return self._current_learning_rate
         return lr
 
+    @property
+    def learning_rate(self):
+        if not hasattr(self, "_learning_rate") or self._learning_rate is None:
+            raise ValueError(
+                "Missing learning rate, please set self.learning_rate at"
+                " optimizer creation time."
+            )
+        return self._learning_rate
+
     @learning_rate.setter
     def learning_rate(self, learning_rate):
         if isinstance(
-            self._learning_rate, learning_rate_schedule.LearningRateSchedule
+            learning_rate, learning_rate_schedule.LearningRateSchedule
         ):
-            raise TypeError(
-                "This optimizer was created with a `LearningRateSchedule`"
-                " object as its `learning_rate` constructor argument, "
-                "hence its learning rate is not settable. If you need the"
-                " learning rate to be settable, you should instantiate "
-                "the optimizer with a float `learning_rate` argument."
-            )
-        self._learning_rate.assign(learning_rate)
+            self._learning_rate = learning_rate
+        else:
+            if isinstance(
+                self._learning_rate, learning_rate_schedule.LearningRateSchedule
+            ):
+                raise TypeError(
+                    "This optimizer was created with a `LearningRateSchedule`"
+                    " object as its `learning_rate` constructor argument, "
+                    "hence its learning rate is not settable. If you need the"
+                    " learning rate to be settable, you should instantiate "
+                    "the optimizer with a float `learning_rate` argument."
+                )
+            self._learning_rate.assign(learning_rate)
 
     @property
     @doc_controls.do_not_generate_docs

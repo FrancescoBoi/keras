@@ -199,7 +199,7 @@ class Ftrl(optimizer.Optimizer):
     def update_step(self, gradient, variable):
         """Update step given gradient and the associated model variable."""
 
-        lr = tf.cast(self.learning_rate, variable.dtype)
+        lr = tf.cast(self.current_learning_rate(), variable.dtype)
         var_key = self._var_key(variable)
         accum = self._accumulators[self._index_dict[var_key]]
         linear = self._linears[self._index_dict[var_key]]

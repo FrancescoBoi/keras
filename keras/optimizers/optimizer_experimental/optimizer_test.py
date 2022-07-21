@@ -202,18 +202,21 @@ class OptimizerFuntionalityTest(tf.test.TestCase, parameterized.TestCase):
         )
         optimizer = adam_new.Adam(learning_rate=lr_schedule)
         self.assertIsInstance(
-            optimizer._learning_rate, learning_rate_schedule.ExponentialDecay
+            optimizer.learning_rate, learning_rate_schedule.ExponentialDecay
         )
-        self.assertEqual(optimizer.learning_rate, 0.01)
+        self.assertEqual(optimizer.current_learning_rate(), 0.01)
         # Test the legacy property.
-        self.assertEqual(optimizer.lr, 0.01)
+        self.assertIsInstance(
+            optimizer.lr, learning_rate_schedule.ExponentialDecay
+        )
 
         x = tf.Variable([1.0, 2.0], dtype=tf.float32)
         grads = tf.convert_to_tensor([1.0, 2.0])
         for _ in range(2):
             optimizer.apply_gradients(zip([grads], [x]))
         self.assertTrue(
-            optimizer.learning_rate < 0.01 and optimizer.learning_rate > 0.00999
+            optimizer.current_learning_rate() < 0.01
+            and optimizer.current_learning_rate() > 0.00999
         )
         with self.assertRaisesRegex(
             TypeError, "This optimizer was created with*"

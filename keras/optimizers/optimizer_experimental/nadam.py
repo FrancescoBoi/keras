@@ -119,7 +119,7 @@ class Nadam(optimizer.Optimizer):
     def update_step(self, gradient, variable):
         """Update step given gradient and the associated model variable."""
         var_dtype = variable.dtype
-        lr = tf.cast(self.learning_rate, var_dtype)
+        lr = tf.cast(self.current_learning_rate(), var_dtype)
         local_step = tf.cast(self.iterations + 1, var_dtype)
         next_step = tf.cast(self.iterations + 2, var_dtype)
         decay = tf.cast(0.96, var_dtype)

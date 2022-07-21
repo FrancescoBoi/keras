@@ -131,7 +131,7 @@ class Adamax(optimizer.Optimizer):
 
     def update_step(self, gradient, variable):
         """Update step given gradient and the associated model variable."""
-        lr = tf.cast(self.learning_rate, variable.dtype)
+        lr = tf.cast(self.current_learning_rate(), variable.dtype)
         local_step = tf.cast(self.iterations + 1, variable.dtype)
         beta_1_power = tf.pow(tf.cast(self.beta_1, variable.dtype), local_step)
 

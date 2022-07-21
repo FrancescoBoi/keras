@@ -149,7 +149,7 @@ class SGD(optimizer.Optimizer):
 
     def update_step(self, gradient, variable):
         """Update step given gradient and the associated model variable."""
-        lr = tf.cast(self.learning_rate, variable.dtype)
+        lr = tf.cast(self.current_learning_rate(), variable.dtype)
         m = None
         var_key = self._var_key(variable)
         if self.momentum != 0:
